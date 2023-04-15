@@ -1,0 +1,31 @@
+以Leetcode的TwoSum為例
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int,int> visited;   
+        //unordered_map類似dict 格式為[key, value] 不允許重複的key 如果key重複就複寫該value
+        for (int i=0; i<nums.size(); i++) {
+            int n = nums[i];
+            if(visited.count(target - n))  //  搜尋visited裡面有沒有(target - n)的key //因為key不能重複 輸出只會有0或1
+                return {visited[target - n], i};
+            visited[n] = i;
+        }
+        return {};
+    }
+};
+
+unordered_map的基礎
+表層類似dict 關係是key->value
+背後基礎是Array 做法是會將key使用hash進行雜湊
+hash值會作為該Array的索引 取值方式會變成 Array[hash] = value
+而Array在取值的時間複雜度會是O(1)
+
+然而hash雜湊值會有一個問題是在於空間使用比較大
+假設我有1萬個hash 就要使用1萬個空間
+而要壓縮空間的方式是將hash取餘數 例如 "mod 100" 這樣我就可以把空間壓到100格
+但是取餘數可能會有相同的對吧 例如101跟201 mod 100都是1 這就是所謂的"hash碰撞"
+如果好死不死10000個hash的餘數都是1 不就沒有任何加速效果?
+所以我就把同一個餘數的hash值用linked-list的方式儲存即可 使用"Binary tree" 二元樹儲存
+我就算把10000個hash都存在同一個二元樹裡面 搜尋速度最慢(worst case)也是log(n)
+所以本題的時間複雜度是 for迴圈(n) * log(n)
